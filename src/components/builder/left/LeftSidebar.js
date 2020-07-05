@@ -1,5 +1,5 @@
 import React from "react";
-import Input from "../../shared/Input";
+import Profile from "../sections/Profile";
 import LeftNavbar from "./LeftNavbar";
 import styles from "./LeftSidebar.module.css";
 
@@ -9,13 +9,7 @@ const LeftSidebar = () => {
       <LeftNavbar />
 
       <div className={styles.container}>
-        <section>
-          <h2 className="text-4xl mb-8">Profile</h2>
-          <div className="flex items-center">
-            <div className={styles.circle}></div>
-            <Input label="Photograph" className="ml-6" />
-          </div>
-        </section>
+        <Profile />
       </div>
     </div>
   );

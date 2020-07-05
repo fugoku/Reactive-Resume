@@ -3,10 +3,3 @@
   box-shadow: var(--left-shadow);
   @apply w-full h-screen p-8;
 }
-
-.circle {
-  width: 60px;
-  height: 60px;
-  flex: 0 0 60px;
-  @apply bg-gray-300 rounded-full;
-}
