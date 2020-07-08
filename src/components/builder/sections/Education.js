@@ -2,7 +2,6 @@ import { get } from "lodash";
 import React from "react";
 import Heading from "../../shared/Heading";
 import List from "../lists/List";
-import TripleFieldListItem from "../lists/triple/TripleFieldListItem";
 
 const Education = ({ id, name, event, state }) => {
   const path = `${id}.items`;
@@ -18,7 +17,6 @@ const Education = ({ id, name, event, state }) => {
         event={event}
         titlePath="institution"
         textPath="field"
-        listItemComponent={TripleFieldListItem}
       />
     </section>
   );

@@ -36,8 +36,8 @@ const AwardModal = () => {
     >
       {(formik) => (
         <DataModal
+          name="Award"
           path="awards.items"
-          name="Awards"
           event={ModalEvents.AWARD_MODAL}
         >
           <div className="grid grid-cols-2 gap-8">
