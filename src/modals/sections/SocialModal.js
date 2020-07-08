@@ -1,9 +1,9 @@
 import { Formik } from "formik";
 import { get } from "lodash";
-import React, { useContext } from "react";
+import React from "react";
 import * as Yup from "yup";
 import Input from "../../components/shared/Input";
-import ModalContext from "../../contexts/ModalContext";
+import ModalEvents from "../../constants/ModalEvents";
 import DataModal from "../DataModal";
 
 const initialValues = {
@@ -24,11 +24,10 @@ const validationSchema = Yup.object().shape({
 });
 
 const SocialModal = () => {
-  const { events } = useContext(ModalContext);
-
   const getFieldProps = (formik, name) => ({
     touched: get(formik, `touched.${name}`, false),
     error: get(formik, `errors.${name}`, ""),
+    isRequired: get(validationSchema, `fields.${name}._exclusive.required`),
     ...formik.getFieldProps(name),
   });
 
@@ -42,7 +41,7 @@ const SocialModal = () => {
         <DataModal
           path="social.items"
           name="Social Network"
-          event={events.SOCIAL_MODAL}
+          event={ModalEvents.SOCIAL_MODAL}
         >
           <div className="grid grid-cols-2 gap-8">
             <Input
