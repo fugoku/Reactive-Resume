@@ -1,38 +1,25 @@
 import { get } from "lodash";
-import React, { useContext } from "react";
-import ModalContext from "../../../contexts/ModalContext";
+import React from "react";
 import Heading from "../../shared/Heading";
+import DoubleFieldListItem from "../lists/double/DoubleFieldListItem";
 import List from "../lists/List";
-import SmallListItem from "../lists/small/SmallListItem";
 
-const Social = ({ state }) => {
-  const { emitter, events } = useContext(ModalContext);
-
-  const path = "social.items";
+const Social = ({ id, name, event, state }) => {
+  const path = `${id}.items`;
   const items = get(state, path, []);
-
-  const handleAdd = () => emitter.emit(events.SOCIAL_MODAL);
-
-  const handleEdit = (data) => emitter.emit(events.SOCIAL_MODAL, data);
 
   return (
     <section>
-      <Heading>Social Network</Heading>
+      <Heading>{name}</Heading>
 
-      <List items={items} onAdd={handleAdd}>
-        {items.map((x, i) => (
-          <SmallListItem
-            key={x.id}
-            data={x}
-            path={path}
-            title={x.network}
-            isFirst={i === 0}
-            subtitle={x.username}
-            onEdit={() => handleEdit(x)}
-            isLast={i === items.length - 1}
-          />
-        ))}
-      </List>
+      <List
+        path={path}
+        items={items}
+        event={event}
+        titlePath="network"
+        subtitlePath="username"
+        listItemComponent={DoubleFieldListItem}
+      />
     </section>
   );
 };
