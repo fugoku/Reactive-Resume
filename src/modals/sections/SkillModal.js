@@ -1,34 +1,37 @@
 import { Formik } from 'formik';
-import { get } from 'lodash';
 import React from 'react';
 import * as Yup from 'yup';
 import Input from '../../components/shared/Input';
 import ModalEvents from '../../constants/ModalEvents';
+import { getFieldProps } from '../../utils';
 import DataModal from '../DataModal';
+
+const SKILL_LEVELS = [
+  'Fundamental Awareness',
+  'Novice',
+  'Intermediate',
+  'Advanced',
+  'Expert',
+];
 
 const initialValues = {
   name: '',
-  level: '',
+  level: SKILL_LEVELS[0],
 };
 
-const validationSchema = Yup.object().shape({
+const schema = Yup.object().shape({
   name: Yup.string().required('This is a required field.'),
-  level: Yup.string().required('This is a required field.'),
+  level: Yup.string()
+    .oneOf(SKILL_LEVELS, 'Must be one of the options above.')
+    .required('This is a required field.'),
 });
 
 const SkillModal = () => {
-  const getFieldProps = (formik, name) => ({
-    touched: get(formik, `touched.${name}`, false),
-    error: get(formik, `errors.${name}`, ''),
-    isRequired: get(validationSchema, `fields.${name}._exclusive.required`),
-    ...formik.getFieldProps(name),
-  });
-
   return (
     <Formik
       validateOnBlur
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={schema}
     >
       {(formik) => (
         <DataModal
@@ -40,13 +43,14 @@ const SkillModal = () => {
             <Input
               label="Name"
               placeholder="ReactJS"
-              {...getFieldProps(formik, 'name')}
+              {...getFieldProps(formik, schema, 'name')}
             />
 
             <Input
-              type="select"
               label="Level"
-              {...getFieldProps(formik, 'level')}
+              type="dropdown"
+              options={SKILL_LEVELS}
+              {...getFieldProps(formik, schema, 'level')}
             />
           </div>
         </DataModal>

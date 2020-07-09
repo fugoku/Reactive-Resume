@@ -10,6 +10,7 @@ const Education = ({ id, name, event }) => {
       <Heading>{name}</Heading>
 
       <List
+        hasDate
         path={path}
         event={event}
         titlePath="institution"
