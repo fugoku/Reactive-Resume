@@ -2,30 +2,32 @@ import moment from 'moment';
 import React, { memo, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import PageContext from '../../../contexts/PageContext';
+import { safetyCheck } from '../../../utils';
 
 const AwardItem = (x) => (
-  <div key={x.id} className="mb-2">
+  <div key={x.id}>
     <div className="flex justify-between items-center">
-      <div>
+      <div className="flex flex-col">
         <h6 className="font-semibold">{x.title}</h6>
-        <p className="text-xs">{x.awarder}</p>
+        <span className="text-xs">{x.awarder}</span>
       </div>
-
-      <h6 className="text-xs font-medium">
-        {moment(x.date).format('MMMM YYYY')}
-      </h6>
+      {x.date && (
+        <h6 className="text-xs font-medium">
+          {moment(x.date).format('MMMM YYYY')}
+        </h6>
+      )}
     </div>
-    <ReactMarkdown className="mt-2 text-sm" source={x.summary} />
+    <ReactMarkdown className="markdown mt-2 text-sm" source={x.summary} />
   </div>
 );
 
 const AwardsA = () => {
   const { data, heading: Heading } = useContext(PageContext);
 
-  return data.awards.visible && data.awards.items ? (
+  return safetyCheck(data.awards) ? (
     <div>
       <Heading>{data.awards.heading}</Heading>
-      {data.awards.items.map(AwardItem)}
+      <div className="grid gap-4">{data.awards.items.map(AwardItem)}</div>
     </div>
   ) : null;
 };
