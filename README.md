@@ -7,7 +7,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/amruthpillai/reactive-resume?style=flat-square)](https://hub.docker.com/r/amruthpillai/reactive-resume)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FAmruthPillai%2FReactive-Resume.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FAmruthPillai%2FReactive-Resume?ref=badge_shield)
 
-## [Go to App](https://rxresu.me/)
+## [Go to App](https://rxresu.me) | [Docs](https://docs.rxresu.me)
 
 Reactive Resume is a free and open source resume builder that’s built to make the mundane tasks of creating, updating and sharing your resume as easy as 1, 2, 3. With this app, you can create multiple resumes, share them with recruiters through a unique link and print as PDF, all for free, no advertisements, without losing the integrity and privacy of your data.
 
@@ -42,64 +42,17 @@ You have complete control over what goes into your resume, how it looks, what co
 
 Help by [translating Reactive Resume](https://translate.rxresu.me) to your language!
 
-## Docker Setup
+## Tutorial
 
-You can pull the prebuilt docker images right off the shelf from either [Docker Hub](https://hub.docker.com/repository/docker/amruthpillai/reactive-resume) or [GitHub Container Registry](https://ghcr.io/amruthpillai/reactive-resume). Keep in mind, you would also need a database for this to work as intended.
-
-```sh
-# Server
-docker run -p 3100:3100 --env-file .env amruthpillai/reactive-resume:server-latest
-
-# Client
-docker run -p 3000:3000 --env-file .env amruthpillai/reactive-resume:client-latest
-```
-
-Or, to make your life easier there's a simple `docker-compose.yml` included to help you get set up for success.
-
-```sh
-docker compose up
-```
+The docs include an extensive [Tutorial](https://docs.rxresu.me/tutorial) section which outline the features of Reactive Resume and help you through building your first resume on the app.
 
 ## Build from Source
 
-If you don't want to use Docker, I understand. There's an old-school way to build the app too. This project, and these instructions rely heavily on [pnpm](https://pnpm.io/) so you might want to have that installed on your system before you continue.
-
-1. Clone the repository locally, or use GitHub Codespaces or CodeSandbox
-
-```
-git clone https://github.com/AmruthPillai/Reactive-Resume.git
-cd Reactive-Resume
-```
-
-2. Install dependencies using `pnpm`, but feel free to use any other package manager that supports npm workspaces.
-
-```
-pnpm install
-```
-
-3. Copy the `.env.example` file to `.env` in the project root and fill it with values according to your setup. You can skip the SendGrid variables if you don't want to set up mail right away.
-
-```
-cp .env.example .env
-```
-
-1. Use Docker Compose to create a PostgreSQL instance and a `reactive_resume` database, or feel free to use your own and modify the variables used in `.env`
-
-```
-docker-compose up -d postgres
-```
-
-5. Run the project and start building!
-
-```
-pnpm dev
-```
+For extensive information on how to build the app on your local machine, head over to the docs's [Source Code](https://docs.rxresu.me/source-code) section.
 
 ## Contributing
 
-Please refer to the project's style and contribution guidelines for submitting pull requests.
-
-In general, this project follows the "fork-and-pull" Git workflow.
+This project makes use of [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style and workflow for commit messages to ensure that the CHANGELOG is auto-generated. In general, this project follows the "fork-and-pull" Git workflow.
 
 1. **Fork** the repo on GitHub
 2. **Clone** the project to your own machine
@@ -117,15 +70,17 @@ Use the [GitHub Issues](https://github.com/AmruthPillai/Reactive-Resume/issues/n
 
 Reactive Resume would be nothing without the folks who supported me and kept the project alive in the beginning, and your cotinued support is what keeps me going. If you found Reactive Resume to be useful, helpful or just insightful and appreciate the effort I took to make the project, please consider donating as little or as much as your can.
 
-[☕️ Buy me a coffee](https://www.buymeacoffee.com/AmruthPillai)
+### [☕️ Buy me a coffee](https://www.buymeacoffee.com/AmruthPillai) | [💸 PayPal](https://paypal.me/RajaRajanA)
 
 ## Infrastructure
 
-- Next.js, frontend
-- NestJS, backend
-- PostgreSQL, database
-- DigitalOcean, infrastructure provider
-- Crowdin, translation management platform
+- [Next.js](https://nextjs.org/), frontend
+- [NestJS](https://nestjs.com/), backend
+- [PostgreSQL](https://www.postgresql.org/), database
+- [DigitalOcean](https://www.digitalocean.com/), infrastructure provider
+- [Crowdin](https://translate.rxresu.me/), translation management platform
+
+&nbsp;
 
 <a href="https://pillai.xyz/digitalocean">
   <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" width="200px" />
