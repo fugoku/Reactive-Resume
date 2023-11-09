@@ -1,12 +1,29 @@
-import { SectionKey } from "@reactive-resume/schema";
+import {
+  Award,
+  Certification,
+  CustomSection,
+  CustomSectionGroup,
+  Education,
+  Experience,
+  Interest,
+  Language,
+  Profile,
+  Project,
+  Publication,
+  Reference,
+  SectionKey,
+  SectionWithItem,
+  Skill,
+  URL,
+  Volunteer,
+} from "@reactive-resume/schema";
 import { cn, isEmptyString, isUrl } from "@reactive-resume/utils";
+import get from "lodash.get";
 import { Fragment } from "react";
 
 import { Picture } from "../components/picture";
 import { useArtboardStore } from "../store/artboard";
 import { TemplateProps } from "../types/template";
-
-const fieldDisplay = cn("flex items-center gap-x-1.5 border-r pr-2 last:border-r-0 last:pr-0");
 
 const Header = () => {
   const basics = useArtboardStore((state) => state.resume.basics);
@@ -16,43 +33,39 @@ const Header = () => {
       <Picture />
 
       <div className="space-y-0.5">
-        <div className="text-2xl font-bold leading-tight">{basics.name}</div>
+        <div className="text-2xl font-bold">{basics.name}</div>
         <div className="text-base">{basics.headline}</div>
 
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
           {basics.location && (
-            <div className={cn(fieldDisplay)}>
-              <i className="ph ph-map-pin" />
+            <div className="flex items-center gap-x-1.5 border-r pr-2 last:border-r-0 last:pr-0">
+              <i className="ph ph-bold ph-map-pin text-primary" />
               <div>{basics.location}</div>
             </div>
           )}
           {basics.phone && (
-            <div className={cn(fieldDisplay)}>
-              <i className="ph ph-phone" />
+            <div className="flex items-center gap-x-1.5 border-r pr-2 last:border-r-0 last:pr-0">
+              <i className="ph ph-bold ph-phone text-primary" />
               <a href={`tel:${basics.phone}`} target="_blank" rel="noreferrer">
                 {basics.phone}
               </a>
             </div>
           )}
           {basics.email && (
-            <div className={cn(fieldDisplay)}>
-              <i className="ph ph-envelope" />
+            <div className="flex items-center gap-x-1.5 border-r pr-2 last:border-r-0 last:pr-0">
+              <i className="ph ph-bold ph-at text-primary" />
               <a href={`mailto:${basics.email}`} target="_blank" rel="noreferrer">
                 {basics.email}
               </a>
             </div>
           )}
-          {isUrl(basics.url.href) && (
-            <div className={cn(fieldDisplay)}>
-              <i className="ph ph-globe" />
-              <a href={basics.url.href} target="_blank" rel="noreferrer">
-                {basics.url.label || basics.url.href}
-              </a>
-            </div>
-          )}
+          <Link url={basics.url} />
           {basics.customFields.map((item) => (
-            <div key={item.id} className={cn(fieldDisplay)}>
-              <i className={`ph ph-${item.icon}`} />
+            <div
+              key={item.id}
+              className="flex items-center gap-x-1.5 border-r pr-2 last:border-r-0 last:pr-0"
+            >
+              <i className={cn(`ph ph-bold ph-${item.icon}`, "text-primary")} />
               <span>{[item.name, item.value].filter(Boolean).join(": ")}</span>
             </div>
           ))}
@@ -62,580 +75,384 @@ const Header = () => {
   );
 };
 
-const sectionHeading = cn("mb-1.5 mt-3 border-b pb-0.5 text-sm font-bold uppercase");
+const Summary = () => {
+  const section = useArtboardStore((state) => state.resume.sections.summary);
 
-const Profiles = () => {
-  const section = useArtboardStore((state) => state.resume.sections.profiles);
-
-  if (!section.visible || !section.items.length) return null;
+  if (!section.visible || isEmptyString(section.content)) return null;
 
   return (
     <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
+      <h4 className="mb-2 border-b pb-0.5 text-sm font-bold uppercase">{section.name}</h4>
 
       <div
-        className="mt-2 grid items-center"
+        className="wysiwyg"
+        style={{ columns: section.columns }}
+        dangerouslySetInnerHTML={{ __html: section.content }}
+      />
+    </section>
+  );
+};
+
+type RatingProps = { level: number };
+
+const Rating = ({ level }: RatingProps) => (
+  <div className="flex items-center gap-x-1.5">
+    {Array.from({ length: 5 }).map((_, index) => (
+      <div
+        key={index}
+        className={cn("h-2 w-2 rounded-full border border-primary", level > index && "bg-primary")}
+      />
+    ))}
+  </div>
+);
+
+type LinkProps = {
+  url: URL;
+  icon?: React.ReactNode;
+  label?: string;
+  className?: string;
+};
+
+const Link = ({ url, icon, label, className }: LinkProps) => {
+  if (!isUrl(url.href)) return null;
+
+  return (
+    <div className="flex items-center gap-x-1.5">
+      {icon ?? <i className="ph ph-bold ph-link text-primary" />}
+      <a
+        href={url.href}
+        target="_blank"
+        rel="noreferrer noopener nofollow"
+        className={cn("inline-block", className)}
+      >
+        {label || url.label || url.href}
+      </a>
+    </div>
+  );
+};
+
+type SectionProps<T> = {
+  section: SectionWithItem<T> | CustomSectionGroup;
+  children?: (item: T) => React.ReactNode;
+  className?: string;
+  urlKey?: keyof T;
+  levelKey?: keyof T;
+  summaryKey?: keyof T;
+  keywordsKey?: keyof T;
+};
+
+const Section = <T,>({
+  section,
+  children,
+  className,
+  urlKey,
+  levelKey,
+  summaryKey,
+  keywordsKey,
+}: SectionProps<T>) => {
+  if (!section.visible || !section.items.length) return null;
+
+  return (
+    <section id={section.id} className="grid">
+      <h4 className="mb-2 border-b pb-0.5 text-sm font-bold uppercase">{section.name}</h4>
+
+      <div
+        className="grid gap-3"
         style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
       >
-        {section.items.map((item) => (
-          <div key={item.id} className="flex items-center gap-x-3">
-            <img
-              width="16"
-              height="16"
-              alt={item.network}
-              src={`https://cdn.simpleicons.org/${item.icon}`}
-            />
+        {section.items
+          .filter((item) => item.visible)
+          .map((item) => {
+            const url = (urlKey && get(item, urlKey)) as URL | undefined;
+            const level = (levelKey && get(item, levelKey, 0)) as number | undefined;
+            const summary = (summaryKey && get(item, summaryKey, "")) as string | undefined;
+            const keywords = (keywordsKey && get(item, keywordsKey, [])) as string[] | undefined;
 
-            <div className="leading-tight">
-              {isUrl(item.url.href) ? (
-                <a href={item.url.href} target="_blank" rel="noreferrer" className="font-medium">
-                  {item.url.label || item.username}
-                </a>
-              ) : (
-                <span className="font-medium">{item.username}</span>
-              )}
+            return (
+              <div key={item.id} className={cn("space-y-2", className)}>
+                <div className="leading-snug">
+                  {children?.(item as T)}
+                  {url && <Link url={url} />}
+                </div>
 
-              <p className="text-sm">{item.network}</p>
-            </div>
-          </div>
-        ))}
+                {summary && !isEmptyString(summary) && (
+                  <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: summary }} />
+                )}
+
+                {level && level > 0 && <Rating level={level} />}
+
+                {keywords && keywords.length > 0 && (
+                  <p className="text-sm">{keywords.join(", ")}</p>
+                )}
+              </div>
+            );
+          })}
       </div>
     </section>
   );
 };
 
-const Summary = () => {
-  const section = useArtboardStore((state) => state.resume.sections.summary);
-
-  if (!section.visible || !section.content) return null;
+const Profiles = () => {
+  const section = useArtboardStore((state) => state.resume.sections.profiles);
+  const fontSize = useArtboardStore((state) => state.resume.metadata.typography.font.size);
 
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      {!isEmptyString(section.content) && (
-        <main>
-          <div
-            className="wysiwyg"
-            style={{ columns: section.columns }}
-            dangerouslySetInnerHTML={{ __html: section.content }}
-          />
-        </main>
+    <Section<Profile> section={section}>
+      {(item) => (
+        <div className="leading-snug">
+          {isUrl(item.url.href) ? (
+            <Link
+              url={item.url}
+              label={item.username}
+              icon={
+                <img
+                  width={fontSize}
+                  height={fontSize}
+                  alt={item.network}
+                  src={`https://cdn.simpleicons.org/${item.icon}`}
+                />
+              }
+            />
+          ) : (
+            <p>{item.username}</p>
+          )}
+          <p className="text-sm">{item.network}</p>
+        </div>
       )}
-    </section>
+    </Section>
   );
 };
 
 const Experience = () => {
   const section = useArtboardStore((state) => state.resume.sections.experience);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id}>
-            <header className="mb-2 flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.company}</div>
-                <div>{item.position}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                <div>{item.location}</div>
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
+    <Section<Experience> section={section} urlKey="url" summaryKey="summary">
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.company}</div>
+            <div>{item.position}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+            <div>{item.location}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Education = () => {
   const section = useArtboardStore((state) => state.resume.sections.education);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id}>
-            <header className="mb-2 flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.institution}</div>
-                <div>{item.area}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                <div>{item.studyType}</div>
-                <div>{item.score}</div>
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
+    <Section<Education> section={section} urlKey="url" summaryKey="summary">
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.institution}</div>
+            <div>{item.area}</div>
+            <div>{item.score}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+            <div>{item.studyType}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Awards = () => {
   const section = useArtboardStore((state) => state.resume.sections.awards);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.title}</div>
-                <div>{item.awarder}</div>
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
+    <Section<Award> section={section} urlKey="url" summaryKey="summary">
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.title}</div>
+            <div>{item.awarder}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Certifications = () => {
   const section = useArtboardStore((state) => state.resume.sections.certifications);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-                <div>{item.issuer}</div>
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
+    <Section<Certification> section={section} urlKey="url" summaryKey="summary">
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.name}</div>
+            <div>{item.issuer}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Skills = () => {
   const section = useArtboardStore((state) => state.resume.sections.skills);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-                <div>{item.description}</div>
-              </div>
-            </header>
-
-            {item.keywords.length > 0 && (
-              <footer>
-                <p className="text-sm">{item.keywords.join(", ")}</p>
-              </footer>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
+    <Section<Skill> section={section} levelKey="level" keywordsKey="keywords">
+      {(item) => (
+        <div className="leading-tight">
+          <div className="font-bold">{item.name}</div>
+          <div>{item.description}</div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Interests = () => {
   const section = useArtboardStore((state) => state.resume.sections.interests);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id}>
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-              </div>
-            </header>
-
-            {item.keywords.length > 0 && (
-              <footer>
-                <p className="text-sm">{item.keywords.join(", ")}</p>
-              </footer>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
+    <Section<Interest> section={section} keywordsKey="keywords" className="space-y-0.5">
+      {(item) => <div className="font-bold">{item.name}</div>}
+    </Section>
   );
 };
 
 const Publications = () => {
   const section = useArtboardStore((state) => state.resume.sections.publications);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-                <div>{item.publisher}</div>
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
+    <Section<Publication> section={section} urlKey="url" summaryKey="summary">
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.name}</div>
+            <div>{item.publisher}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Volunteer = () => {
   const section = useArtboardStore((state) => state.resume.sections.volunteer);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id}>
-            <header className="mb-2 flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.organization}</div>
-                <div>{item.position}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                <div>{item.location}</div>
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
+    <Section<Volunteer> section={section} urlKey="url" summaryKey="summary">
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.organization}</div>
+            <div>{item.position}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+            <div>{item.location}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Languages = () => {
   const section = useArtboardStore((state) => state.resume.sections.languages);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-                <div>{item.fluency}</div>
-              </div>
-            </header>
-          </div>
-        ))}
-      </div>
-    </section>
+    <Section<Language> section={section} levelKey="fluencyLevel">
+      {(item) => (
+        <div className="space-y-0.5">
+          <div className="font-bold">{item.name}</div>
+          <div>{item.fluency}</div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Projects = () => {
   const section = useArtboardStore((state) => state.resume.sections.projects);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-                <div>{item.description}</div>
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
-
-            {item.keywords.length > 0 && (
-              <footer>
-                <p className="text-sm">{item.keywords.join(", ")}</p>
-              </footer>
-            )}
+    <Section<Project> section={section} urlKey="url" summaryKey="summary" keywordsKey="keywords">
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.name}</div>
+            <div>{item.description}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const References = () => {
   const section = useArtboardStore((state) => state.resume.sections.references);
 
-  if (!section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-                <div>{item.description}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
+    <Section<Reference> section={section} urlKey="url" summaryKey="summary">
+      {(item) => (
+        <div>
+          <div className="font-bold">{item.name}</div>
+          <div>{item.description}</div>
+        </div>
+      )}
+    </Section>
   );
 };
 
 const Custom = ({ id }: { id: string }) => {
   const section = useArtboardStore((state) => state.resume.sections.custom[id]);
 
-  if (!section || !section.visible || !section.items.length) return null;
-
   return (
-    <section id={section.id}>
-      <h4 className={cn(sectionHeading)}>{section.name}</h4>
-
-      <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}
-      >
-        {section.items.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <header className="flex items-center justify-between">
-              <div className="text-left">
-                <div className="font-bold">{item.name}</div>
-                <div>{item.description}</div>
-                {isUrl(item.url.href) && (
-                  <div>
-                    <a href={item.url.href} target="_blank" rel="noreferrer">
-                      {item.url.label || item.url.href}
-                    </a>
-                  </div>
-                )}
-              </div>
-
-              <div className="shrink-0 text-right">
-                <div className="font-bold">{item.date}</div>
-                <div>{item.location}</div>
-              </div>
-            </header>
-
-            {!isEmptyString(item.summary) && (
-              <main>
-                <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: item.summary }} />
-              </main>
-            )}
-
-            {item.keywords.length > 0 && (
-              <footer>
-                <p className="text-sm">{item.keywords.join(", ")}</p>
-              </footer>
-            )}
+    <Section<CustomSection>
+      section={section}
+      urlKey="url"
+      summaryKey="summary"
+      keywordsKey="keywords"
+    >
+      {(item) => (
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className="font-bold">{item.name}</div>
+            <div>{item.description}</div>
           </div>
-        ))}
-      </div>
-    </section>
+
+          <div className="shrink-0 text-right">
+            <div className="font-bold">{item.date}</div>
+            <div>{item.location}</div>
+          </div>
+        </div>
+      )}
+    </Section>
   );
 };
 
@@ -670,7 +487,7 @@ const mapSectionToComponent = (section: SectionKey) => {
     default:
       if (section.startsWith("custom.")) return <Custom id={section.split(".")[1]} />;
 
-      return <p>{section}</p>;
+      return null;
   }
 };
 
@@ -681,7 +498,7 @@ export const Rhyhorn = ({ columns, isFirstPage = false }: TemplateProps) => {
     <div className="space-y-4">
       {isFirstPage && <Header />}
 
-      <div className="space-y-2">
+      <div className="space-y-4">
         {main.map((section) => (
           <Fragment key={section}>{mapSectionToComponent(section)}</Fragment>
         ))}
