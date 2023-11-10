@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2023-11-10 09:26+0100\n"
+"POT-Creation-Date: 2023-11-10 11:19+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -40,6 +40,7 @@ msgid "<0>Two-factor authentication is enabled.</0> You will be asked to enter a
 msgstr "<0>Two-factor authentication is enabled.</0> You will be asked to enter a code every time you sign in."
 
 #: apps/client/src/pages/home/page.tsx:12
+#: apps/client/src/pages/home/sections/hero/index.tsx:35
 msgid "A free and open-source resume builder"
 msgstr "A free and open-source resume builder"
 
@@ -47,10 +48,6 @@ msgstr "A free and open-source resume builder"
 #: apps/client/src/pages/home/sections/hero/index.tsx:40
 msgid "A free and open-source resume builder that simplifies the process of creating, updating, and sharing your resume."
 msgstr "A free and open-source resume builder that simplifies the process of creating, updating, and sharing your resume."
-
-#: apps/client/src/pages/home/sections/hero/index.tsx:35
-msgid "A free and open-source resume builder."
-msgstr "A free and open-source resume builder."
 
 #: apps/client/src/pages/builder/sidebars/right/sections/sharing.tsx:29
 msgid "A link has been copied to your clipboard."
@@ -81,6 +78,12 @@ msgstr "Account"
 msgid "Add a custom field"
 msgstr "Add a custom field"
 
+#: apps/client/src/pages/builder/sidebars/left/sections/shared/section-base.tsx:108
+#: apps/client/src/pages/builder/sidebars/left/sections/shared/section-base.tsx:147
+msgctxt "For example, add a new work experience, or add a new profile."
+msgid "Add a new item"
+msgstr "Add a new item"
+
 #: apps/client/src/pages/builder/sidebars/left/sections/shared/section-options.tsx:67
 msgid "Add a new item"
 msgstr "Add a new item"
@@ -89,12 +92,6 @@ msgstr "Add a new item"
 #: apps/client/src/pages/builder/sidebars/left/index.tsx:197
 msgid "Add a new section"
 msgstr "Add a new section"
-
-#: apps/client/src/pages/builder/sidebars/left/sections/shared/section-base.tsx:108
-#: apps/client/src/pages/builder/sidebars/left/sections/shared/section-base.tsx:147
-msgctxt "For example, add a new work experience, or add a new profile."
-msgid "Add New Item"
-msgstr "Add New Item"
 
 #: apps/client/src/pages/builder/sidebars/right/sections/layout.tsx:267
 msgid "Add New Page"
@@ -422,8 +419,8 @@ msgid "Don't know where to begin? Hit the docs!"
 msgstr "Don't know where to begin? Hit the docs!"
 
 #: apps/client/src/pages/dashboard/settings/_sections/profile.tsx:107
-msgid "Don't see your locale? <0>Help translate the app.</0>"
-msgstr "Don't see your locale? <0>Help translate the app.</0>"
+msgid "Don't see your language? <0>Help translate the app.</0>"
+msgstr "Don't see your language? <0>Help translate the app.</0>"
 
 #: apps/client/src/pages/builder/sidebars/right/sections/information.tsx:41
 msgid "Donate to Reactive Resume"
@@ -481,7 +478,7 @@ msgstr "Email"
 msgid "Enable 2FA"
 msgstr "Enable 2FA"
 
-#: apps/client/src/libs/lingui.ts:5
+#: apps/client/src/libs/lingui.ts:10
 msgid "English"
 msgstr "English"
 
@@ -509,7 +506,7 @@ msgstr "Enter your email address and we will send you a link to reset your passw
 msgid "Errors"
 msgstr "Errors"
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:79
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:82
 #: apps/client/src/pages/builder/sidebars/right/sections/export.tsx:40
 msgid "Export"
 msgstr "Export"
@@ -538,19 +535,19 @@ msgstr "Fluency"
 msgid "Fluency (CEFR)"
 msgstr "Fluency (CEFR)"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:95
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:94
 msgid "Font Family"
 msgstr "Font Family"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:136
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:135
 msgid "Font Size"
 msgstr "Font Size"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:110
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:109
 msgid "Font Subset"
 msgstr "Font Subset"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:122
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:121
 msgid "Font Variants"
 msgstr "Font Variants"
 
@@ -592,7 +589,7 @@ msgstr "Full Name"
 msgid "Generate a random title for your resume"
 msgstr "Generate a random title for your resume"
 
-#: apps/client/src/libs/lingui.ts:6
+#: apps/client/src/libs/lingui.ts:11
 msgid "German"
 msgstr "German"
 
@@ -697,7 +694,7 @@ msgstr "In this section, you can change your password and enable/disable two-fac
 msgid "In this section, you can delete your account and all the data associated to your user, but please keep in mind that <0>this action is irreversible</0>."
 msgstr "In this section, you can delete your account and all the data associated to your user, but please keep in mind that <0>this action is irreversible</0>."
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:83
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:86
 #: apps/client/src/pages/builder/sidebars/right/sections/information.tsx:123
 msgid "Information"
 msgstr "Information"
@@ -740,6 +737,7 @@ msgstr "Keywords"
 msgid "Label"
 msgstr "Label"
 
+#: apps/client/src/pages/builder/sidebars/right/sections/locale.tsx:42
 #: apps/client/src/pages/dashboard/settings/_sections/profile.tsx:93
 msgid "Language"
 msgstr "Language"
@@ -749,7 +747,7 @@ msgstr "Language"
 msgid "Last updated {lastUpdated}"
 msgstr "Last updated {lastUpdated}"
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:65
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:68
 #: apps/client/src/pages/builder/sidebars/right/sections/layout.tsx:207
 msgid "Layout"
 msgstr "Layout"
@@ -774,7 +772,7 @@ msgstr "Licensed under <0>MIT</0>"
 msgid "Light"
 msgstr "Light"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:153
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:152
 msgid "Line Height"
 msgstr "Line Height"
 
@@ -786,6 +784,10 @@ msgstr "LinkedIn, JSON Resume, etc."
 #: apps/client/src/pages/dashboard/resumes/page.tsx:41
 msgid "List"
 msgstr "List"
+
+#: apps/client/src/pages/builder/sidebars/right/sections/locale.tsx:36
+msgid "Locale"
+msgstr "Locale"
 
 #: apps/client/src/pages/builder/sidebars/left/dialogs/custom-section.tsx:95
 #: apps/client/src/pages/builder/sidebars/left/dialogs/experience.tsx:86
@@ -864,7 +866,7 @@ msgstr "New Password"
 msgid "Note: This will make your account less secure."
 msgstr "Note: This will make your account less secure."
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:80
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:83
 #: apps/client/src/pages/builder/sidebars/right/sections/notes.tsx:17
 msgid "Notes"
 msgstr "Notes"
@@ -894,7 +896,7 @@ msgid "OpenAI Integration"
 msgstr "OpenAI Integration"
 
 #: apps/client/src/pages/builder/sidebars/right/sections/page.tsx:67
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:170
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:169
 msgid "Options"
 msgstr "Options"
 
@@ -907,7 +909,7 @@ msgstr "or continue with"
 msgid "Organization"
 msgstr "Organization"
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:72
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:75
 #: apps/client/src/pages/builder/sidebars/right/sections/page.tsx:26
 msgid "Page"
 msgstr "Page"
@@ -1081,15 +1083,15 @@ msgstr "Scan the QR code below with your authenticator app to setup 2FA on your 
 msgid "Score"
 msgstr "Score"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:99
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:98
 msgid "Search for a font family"
 msgstr "Search for a font family"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:114
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:113
 msgid "Search for a font subset"
 msgstr "Search for a font subset"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:127
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:126
 msgid "Search for a font variant"
 msgstr "Search for a font variant"
 
@@ -1116,7 +1118,7 @@ msgstr "Settings"
 msgid "Setup two-factor authentication on your account"
 msgstr "Setup two-factor authentication on your account"
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:73
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:76
 #: apps/client/src/pages/builder/sidebars/right/sections/sharing.tsx:39
 msgid "Sharing"
 msgstr "Sharing"
@@ -1180,7 +1182,7 @@ msgstr "Start building your resume by giving it a name."
 msgid "Start from scratch"
 msgstr "Start from scratch"
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:76
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:79
 #: apps/client/src/pages/builder/sidebars/right/sections/statistics.tsx:23
 msgid "Statistics"
 msgstr "Statistics"
@@ -1221,7 +1223,7 @@ msgstr "Support the app by donating what you can!"
 msgid "System"
 msgstr "System"
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:62
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:65
 #: apps/client/src/pages/builder/sidebars/right/sections/template.tsx:18
 msgid "Template"
 msgstr "Template"
@@ -1242,7 +1244,7 @@ msgstr "The passwords you entered do not match."
 msgid "The resume you were looking for doesn't seem to exist, please check the link and try again."
 msgstr "The resume you were looking for doesn't seem to exist, please check the link and try again."
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:71
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:74
 #: apps/client/src/pages/builder/sidebars/right/sections/theme.tsx:20
 #: apps/client/src/pages/dashboard/settings/_sections/profile.tsx:71
 msgid "Theme"
@@ -1303,12 +1305,12 @@ msgstr "Type <0>delete</0> to confirm deleting your account."
 msgid "Type of Study"
 msgstr "Type of Study"
 
-#: apps/client/src/pages/builder/sidebars/right/index.tsx:68
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:67
+#: apps/client/src/pages/builder/sidebars/right/index.tsx:71
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:66
 msgid "Typography"
 msgstr "Typography"
 
-#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:181
+#: apps/client/src/pages/builder/sidebars/right/sections/typography.tsx:180
 msgid "Underline Links"
 msgstr "Underline Links"
 
