@@ -17,7 +17,6 @@ node_modules
 
 # IDE - VSCode
 .vs/*
-.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -50,3 +49,7 @@ stats.html
 # Lingui Compiled Messages
 apps/client/src/locales/_build/
 apps/client/src/locales/*/messages.mjs
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+config.bat
